@@ -31,21 +31,25 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   //! END @TODO1
   app.get("/filteredimage",  async(req, res) => {
+    
     const url = req.query.image_url;
 
     try {
+      //validating and filtering of image
       if(url){
         const filteredImage = await filterImageFromURL(url);
         res.status(200).sendFile(filteredImage, () => {
           deleteLocalFiles([filteredImage]);
         });
       }else {
-        res.status(400).send("Error: No Image URL provided");
+        //Handles case of no query paramater
+        res.status(422).send("Error: No Image URL provided");
       }
       
 
     } catch (err) {
-      res.status(500).send(err.message);
+      //handles all other errors
+      res.status(422).send(err.message);
     }
 
   });
